@@ -15,25 +15,53 @@ def index():
 
 @app.route('/new')
 def new_game():
-    clues = int(request.args.get('clues', 35))
-    puzzle, solution = sudoku_logic.generate_puzzle(clues)
+    difficulty = request.args.get('difficulty')
+
+    if difficulty:
+        try:
+            puzzle, solution = sudoku_logic.generate_puzzle(
+                difficulty=difficulty
+            )
+        except ValueError as error:
+            return jsonify({'error': str(error)}), 400
+    else:
+        clues = int(request.args.get('clues', 35))
+        puzzle, solution = sudoku_logic.generate_puzzle(clues=clues)
+
     CURRENT['puzzle'] = puzzle
     CURRENT['solution'] = solution
-    return jsonify({'puzzle': puzzle})
+    CURRENT['difficulty'] = difficulty or 'custom'
+
+    return jsonify({
+        'puzzle': puzzle,
+        'difficulty': difficulty or 'custom'
+    })
 
 @app.route('/check', methods=['POST'])
 def check_solution():
     data = request.json
     board = data.get('board')
     solution = CURRENT.get('solution')
+
     if solution is None:
         return jsonify({'error': 'No game in progress'}), 400
+
     incorrect = []
+
     for i in range(sudoku_logic.SIZE):
         for j in range(sudoku_logic.SIZE):
+
+            # Ignore empty cells.
+            # Empty cells are represented by 0.
+            if board[i][j] == 0:
+                continue
+
+            # Check only numbers entered by the player.
             if board[i][j] != solution[i][j]:
                 incorrect.append([i, j])
+
     return jsonify({'incorrect': incorrect})
 
 if __name__ == '__main__':
     app.run(debug=True)
+

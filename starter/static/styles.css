@@ -16,7 +16,7 @@ h1 {
     margin: 30px auto;
     border: 4px solid #333;
     background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sudoku-row {
@@ -32,30 +32,67 @@ h1 {
     outline: none;
     background: #fafafa;
     transition: background 0.2s;
+    box-sizing: border-box;
 }
 
+/* Editable cells */
+.sudoku-cell:not(.prefilled) {
+    background: #ffffff;
+}
+
+/* Cell currently being edited */
 .sudoku-cell:focus {
     background: #e0f7fa;
 }
 
+/* Original Sudoku numbers */
 .sudoku-cell.prefilled {
     background: #e0e0e0;
     font-weight: bold;
     color: #333;
 }
 
+/* ONLY incorrect cells become red */
 .sudoku-cell.incorrect {
-    background: #ffcdd2;
+    background: #ffcdd2 !important;
+    color: #c62828;
 }
 
+/* Correct cells */
+.sudoku-cell.correct {
+    background: #c8e6c9 !important;
+    color: #2e7d32;
+}
+
+/* Thick vertical borders */
 .sudoku-cell:nth-child(3),
 .sudoku-cell:nth-child(6) {
     border-right: 3px solid #333;
 }
 
+/* Thick horizontal borders */
 .sudoku-row:nth-child(3) .sudoku-cell,
 .sudoku-row:nth-child(6) .sudoku-cell {
     border-bottom: 3px solid #333;
+}
+
+.difficulty-container {
+    margin: 20px auto;
+    font-size: 18px;
+}
+
+.difficulty-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#difficulty {
+    padding: 8px 14px;
+    font-size: 16px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
 }
 
 .controls {

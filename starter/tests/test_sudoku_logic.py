@@ -1,3 +1,4 @@
+import pytest
 from sudoku_logic import (
     EMPTY,
     SIZE,
@@ -93,3 +94,69 @@ def test_puzzle_and_solution_are_9x9():
     assert len(solution) == 9
     assert all(len(row) == 9 for row in puzzle)
     assert all(len(row) == 9 for row in solution)
+
+def test_generated_puzzle_has_one_unique_solution():
+    puzzle, solution = generate_puzzle(35)
+
+    assert puzzle != solution
+    assert solution is not None
+
+def count_solutions(board):
+    for row in range(9):
+        for col in range(9):
+            if board[row][col] == 0:
+                total = 0
+
+                for num in range(1, 10):
+                    if is_safe(board, row, col, num):
+                        board[row][col] = num
+                        total += count_solutions(board)
+                        board[row][col] = 0
+
+                        if total > 1:
+                            return total
+
+                return total
+
+    return 1
+
+
+def test_generate_puzzle_has_exactly_one_solution():
+    puzzle, solution = generate_puzzle()
+
+    puzzle_copy = [row[:] for row in puzzle]
+
+    assert count_solutions(puzzle_copy) == 1
+    assert puzzle != solution
+
+import pytest
+
+
+@pytest.mark.parametrize(
+    "difficulty, expected_clues",
+    [
+        ("easy", 45),
+        ("medium", 35),
+        ("hard", 30),
+    ],
+)
+def test_generate_puzzle_difficulty_clue_counts(
+    difficulty, expected_clues
+):
+    puzzle, solution = generate_puzzle(difficulty=difficulty)
+
+    clue_count = sum(
+        cell != EMPTY
+        for row in puzzle
+        for cell in row
+    )
+
+    assert clue_count == expected_clues
+    assert puzzle != solution
+
+def test_generate_puzzle_rejects_invalid_difficulty():
+    import pytest
+
+    with pytest.raises(ValueError):
+        generate_puzzle(difficulty="extreme")
+
