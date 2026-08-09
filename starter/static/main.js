@@ -5,6 +5,7 @@ let puzzle = [];
 
 let timerInterval = null;
 let elapsedSeconds = 0;
+let timerPaused = false;
 
 
 function updateTimer() {
@@ -26,9 +27,38 @@ function startTimer() {
     stopTimer();
 
     elapsedSeconds = 0;
+    timerPaused = false;
+
     document.getElementById('timer').innerText = 'Time: 00:00';
+    document.getElementById('pause-game').innerText = 'Pause';
 
     timerInterval = setInterval(updateTimer, 1000);
+}
+
+function togglePause() {
+
+    const pauseButton = document.getElementById('pause-game');
+
+    if (timerPaused) {
+
+        // Resume the timer
+        timerPaused = false;
+
+        timerInterval = setInterval(updateTimer, 1000);
+
+        pauseButton.innerText = 'Pause';
+
+    } else {
+
+        // Pause the timer
+        timerPaused = true;
+
+        clearInterval(timerInterval);
+
+        timerInterval = null;
+
+        pauseButton.innerText = 'Resume';
+    }
 }
 
 
@@ -326,6 +356,8 @@ window.addEventListener('load', () => {
         .getElementById('difficulty')
         .addEventListener('change', newGame);
 
+    document.getElementById('pause-game')
+        .addEventListener('click', togglePause);
     // Start the first game
     newGame();
 });
