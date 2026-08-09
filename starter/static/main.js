@@ -1,5 +1,6 @@
 // Client-side rendering and interaction for the Flask-backed Sudoku
 
+
 const SIZE = 9;
 let puzzle = [];
 
@@ -7,6 +8,8 @@ let timerInterval = null;
 let elapsedSeconds = 0;
 let timerPaused = false;
 
+let playerName = '';
+let hintCount = 0;
 
 function updateTimer() {
     elapsedSeconds++;
@@ -33,6 +36,18 @@ function startTimer() {
     document.getElementById('pause-game').innerText = 'Pause';
 
     timerInterval = setInterval(updateTimer, 1000);
+}
+
+function getPlayerName() {
+    const nameInput = document.getElementById('player-name');
+
+    playerName = nameInput.value.trim();
+
+    if (playerName === '') {
+        playerName = 'Player';
+    }
+
+    return playerName;
 }
 
 function togglePause() {
@@ -161,6 +176,7 @@ function renderPuzzle(puz) {
 async function newGame() {
 
     try {
+        getPlayerName();
 
         const difficulty =
             document.getElementById('difficulty').value;
@@ -178,7 +194,9 @@ async function newGame() {
         }
 
         renderPuzzle(data.puzzle);
-
+        document.getElementById('result').hidden = true;
+        hintCount = 0;
+        document.getElementById('hint-count').innerText = '0';
         const msg = document.getElementById('message');
 
         msg.innerText = '';
@@ -193,6 +211,113 @@ async function newGame() {
 
         document.getElementById('message').innerText =
             'Unable to start a new game.';
+    }
+}
+
+function getCurrentBoard() {
+
+    const boardDiv =
+        document.getElementById('sudoku-board');
+
+    const inputs =
+        boardDiv.getElementsByTagName('input');
+
+    const board = [];
+
+    for (let i = 0; i < SIZE; i++) {
+
+        board[i] = [];
+
+        for (let j = 0; j < SIZE; j++) {
+
+            const idx = i * SIZE + j;
+
+            const value = inputs[idx].value;
+
+            board[i][j] =
+                value ? parseInt(value, 10) : 0;
+        }
+    }
+
+    return board;
+}
+
+async function useHint() {
+
+    const board = getCurrentBoard();
+
+    try {
+
+        const res = await fetch('/hint', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                board: board
+            })
+        });
+
+
+        const data = await res.json();
+
+
+        if (data.error) {
+
+            document.getElementById('message').innerText =
+                data.error;
+
+            return;
+        }
+
+
+        const inputs =
+            document
+                .getElementById('sudoku-board')
+                .getElementsByTagName('input');
+
+
+        const index =
+            data.row * SIZE + data.col;
+
+
+        const input = inputs[index];
+
+
+        // Fill the correct answer
+        input.value = data.value;
+
+
+        // Lock the hinted cell
+        input.disabled = true;
+
+
+        // Give it the same appearance as a given cell
+        input.classList.remove('incorrect');
+        input.classList.remove('correct');
+        input.classList.add('prefilled');
+
+
+        // Increase hint count
+        hintCount++;
+        document.getElementById('hint-count').innerText = hintCount;
+
+
+        document.getElementById('message').style.color =
+            '#388e3c';
+
+        document.getElementById('message').innerText =
+            'Hint used! One correct cell has been filled.';
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById('message').innerText =
+            'Unable to get a hint.';
     }
 }
 
@@ -283,6 +408,7 @@ async function checkSolution() {
 
             const value = inp.value;
 
+
             // Empty cell
             if (value === '') {
 
@@ -305,12 +431,18 @@ async function checkSolution() {
         }
 
 
-        // Results
+        // -------------------------
+        // Display result
+        // -------------------------
+
         if (incorrect.size > 0) {
 
             msg.style.color = '#d32f2f';
 
             msg.innerText = 'Some cells are incorrect.';
+
+            // Hide result box
+            document.getElementById('result').hidden = true;
 
         } else if (emptyCells > 0) {
 
@@ -319,15 +451,64 @@ async function checkSolution() {
             msg.innerText =
                 'Good progress! Fill in all remaining cells.';
 
+            // Hide result box
+            document.getElementById('result').hidden = true;
+
         } else {
 
+            // -------------------------
             // Puzzle completely solved
+            // -------------------------
+
             stopTimer();
 
             msg.style.color = '#388e3c';
 
             msg.innerText =
                 'Congratulations! You solved it! 🎉';
+
+
+            // Get player information
+            const player = getPlayerName();
+
+            const difficulty =
+                document.getElementById('difficulty').value;
+
+
+            // Format elapsed time
+            const minutes =
+                Math.floor(elapsedSeconds / 60);
+
+            const seconds =
+                elapsedSeconds % 60;
+
+            const formattedTime =
+                String(minutes).padStart(2, '0') +
+                ':' +
+                String(seconds).padStart(2, '0');
+
+
+            // Display player name
+            document.getElementById('result-player').innerText =
+                player;
+
+
+            // Display difficulty
+            document.getElementById('result-difficulty').innerText =
+                difficulty.charAt(0).toUpperCase() +
+                difficulty.slice(1);
+
+
+            // Display completion time
+            document.getElementById('result-time').innerText =
+                formattedTime;
+
+            document.getElementById('result-hints').innerText =
+                hintCount;
+
+
+            // Show result box
+            document.getElementById('result').hidden = false;
         }
 
 
@@ -358,6 +539,9 @@ window.addEventListener('load', () => {
 
     document.getElementById('pause-game')
         .addEventListener('click', togglePause);
+    document
+    .getElementById('hint')
+    .addEventListener('click', useHint);
     // Start the first game
     newGame();
 });

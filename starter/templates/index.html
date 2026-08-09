@@ -1,56 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="A responsive Sudoku game with difficulty levels, timer, hints, and leaderboard">
 
     <title>Sudoku Game</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
+
 
 <body>
 
-    <h1>Sudoku Game</h1>
-
-    <!-- Difficulty Selection -->
-    <div class="difficulty-container">
-
-        <label for="difficulty">Difficulty:</label>
-
-        <select id="difficulty">
-            <option value="easy">Easy</option>
-            <option value="medium" selected>Medium</option>
-            <option value="hard">Hard</option>
-        </select>
-
-    </div>
+    <!-- Theme Toggle -->
+    <button
+        id="theme-toggle"
+        class="theme-toggle"
+        aria-label="Toggle dark and light mode">
+        🌙 Dark Mode
+    </button>
 
 
-    <!-- Sudoku Board -->
-    <div id="sudoku-board"></div>
+    <main>
 
-    <div id="timer">Time: 00:00</div>
-
-    <!-- Controls -->
-    <div class="controls">
-
-        <button id="new-game">
-            New Game
-        </button>
-
-        <button id="check-solution">
-            Check Solution
-        </button>
-        <button id="pause-game">
-            Pause
-        </button>
-        <span id="message"></span>
-
-    </div>
+        <h1>Sudoku Game</h1>
 
 
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
+        <!-- Player Name -->
+        <div class="player-container">
+
+            <label for="player-name">
+                Player Name:
+            </label>
+
+            <input
+                type="text"
+                id="player-name"
+                placeholder="Enter your name"
+                maxlength="20"
+                autocomplete="name"
+                aria-label="Enter your player name">
+
+        </div>
+
+
+        <!-- Difficulty -->
+        <div class="difficulty-container">
+
+            <label for="difficulty">
+                Difficulty:
+            </label>
+
+            <select
+                id="difficulty"
+                aria-label="Select Sudoku difficulty">
+
+                <option value="easy">
+                    Easy
+                </option>
+
+                <option value="medium" selected>
+                    Medium
+                </option>
+
+                <option value="hard">
+                    Hard
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Timer -->
+        <div
+            id="timer"
+            aria-live="polite">
+            Time: 00:00
+        </div>
+
+
+        <!-- Hint Counter -->
+        <div
+            id="hint-counter"
+            aria-live="polite">
+
+            Hints:
+            <span id="hint-count">
+                0
+            </span>
+
+        </div>
+
+
+        <!-- Sudoku Board -->
+        <div
+            id="sudoku-board"
+            aria-label="Sudoku game board">
+        </div>
+
+
+        <!-- Controls -->
+        <div class="controls">
+
+            <button
+                id="new-game"
+                aria-label="Start a new Sudoku game">
+                New Game
+            </button>
+
+
+            <button
+                id="check-solution"
+                aria-label="Check the Sudoku solution">
+                Check Solution
+            </button>
+
+
+            <button
+                id="pause-game"
+                aria-label="Pause or resume the timer">
+                Pause
+            </button>
+
+
+            <button
+                id="hint"
+                aria-label="Get a Sudoku hint">
+                Hint
+            </button>
+
+        </div>
+
+
+        <!-- Game Message -->
+        <div
+            id="message"
+            role="status"
+            aria-live="polite">
+        </div>
+
+
+        <!-- Completion Result -->
+        <section
+            id="result"
+            class="result"
+            hidden
+            aria-live="polite">
+
+            <h2>
+                🎉 Congratulations!
+            </h2>
+
+
+            <p>
+                Player:
+                <strong id="result-player"></strong>
+            </p>
+
+
+            <p>
+                Difficulty:
+                <strong id="result-difficulty"></strong>
+            </p>
+
+
+            <p>
+                Time:
+                <strong id="result-time"></strong>
+            </p>
+
+
+            <p>
+                Hints:
+                <strong id="result-hints"></strong>
+            </p>
+
+        </section>
+
+
+        <!-- Leaderboard -->
+        <section
+            class="leaderboard"
+            aria-labelledby="leaderboard-title">
+
+            <h2 id="leaderboard-title">
+                🏆 Top 10 Leaderboard
+            </h2>
+
+
+            <div class="leaderboard-container">
+
+                <table id="leaderboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th scope="col">
+                                Rank
+                            </th>
+
+                            <th scope="col">
+                                Player
+                            </th>
+
+                            <th scope="col">
+                                Difficulty
+                            </th>
+
+                            <th scope="col">
+                                Time
+                            </th>
+
+                            <th scope="col">
+                                Hints
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="leaderboard-body">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <button
+                id="clear-leaderboard"
+                aria-label="Clear all leaderboard scores">
+
+                Clear Leaderboard
+
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- JavaScript -->
+    <script
+        src="{{ url_for('static', filename='main.js') }}">
+    </script>
 
 </body>
+
 </html>

@@ -127,3 +127,45 @@ button:hover {
     margin: 15px auto;
     color: #333;
 }
+
+.player-container {
+    margin: 20px auto;
+    font-size: 18px;
+}
+
+.player-container label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#player-name {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    width: 200px;
+    box-sizing: border-box;
+}
+
+.result {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 350px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.result h2 {
+    margin-top: 0;
+}
+
+.result p {
+    margin: 8px 0;
+}
+
+#hint-counter {
+    margin: 10px auto;
+    font-size: 18px;
+    font-weight: bold;
+}
