@@ -3,6 +3,42 @@
 const SIZE = 9;
 let puzzle = [];
 
+let timerInterval = null;
+let elapsedSeconds = 0;
+
+
+function updateTimer() {
+    elapsedSeconds++;
+
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+
+    const timeText =
+        String(minutes).padStart(2, '0') +
+        ':' +
+        String(seconds).padStart(2, '0');
+
+    document.getElementById('timer').innerText = `Time: ${timeText}`;
+}
+
+
+function startTimer() {
+    stopTimer();
+
+    elapsedSeconds = 0;
+    document.getElementById('timer').innerText = 'Time: 00:00';
+
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+
+function stopTimer() {
+    if (timerInterval !== null) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
 
 function createBoardElement() {
     const boardDiv = document.getElementById('sudoku-board');
@@ -118,6 +154,9 @@ async function newGame() {
         msg.innerText = '';
         msg.style.color = '#d32f2f';
 
+        // Start timer for the new game
+        startTimer();
+
     } catch (error) {
 
         console.error(error);
@@ -126,7 +165,6 @@ async function newGame() {
             'Unable to start a new game.';
     }
 }
-
 
 async function checkSolution() {
 
@@ -238,7 +276,6 @@ async function checkSolution() {
 
 
         // Results
-
         if (incorrect.size > 0) {
 
             msg.style.color = '#d32f2f';
@@ -253,6 +290,9 @@ async function checkSolution() {
                 'Good progress! Fill in all remaining cells.';
 
         } else {
+
+            // Puzzle completely solved
+            stopTimer();
 
             msg.style.color = '#388e3c';
 
