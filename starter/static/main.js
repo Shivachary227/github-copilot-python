@@ -491,7 +491,13 @@ async function checkSolution() {
             // Display player name
             document.getElementById('result-player').innerText =
                 player;
-
+            // Save completed game to leaderboard
+            saveLeaderboardEntry({
+                player: player,
+                difficulty: difficulty,
+                time: formattedTime,
+                hints: hintCount
+            });
 
             // Display difficulty
             document.getElementById('result-difficulty').innerText =
@@ -544,4 +550,96 @@ window.addEventListener('load', () => {
     .addEventListener('click', useHint);
     // Start the first game
     newGame();
+});
+
+// ==========================================
+// LEADERBOARD
+// ==========================================
+
+function saveLeaderboardEntry(entry) {
+    let leaderboard =
+        JSON.parse(localStorage.getItem('sudokuLeaderboard')) || [];
+
+    leaderboard.push(entry);
+
+    // Sort by fastest time
+    leaderboard.sort((a, b) => {
+        const timeA = timeToSeconds(a.time);
+        const timeB = timeToSeconds(b.time);
+        return timeA - timeB;
+    });
+
+    // Keep only Top 10
+    leaderboard = leaderboard.slice(0, 10);
+
+    localStorage.setItem(
+        'sudokuLeaderboard',
+        JSON.stringify(leaderboard)
+    );
+
+    displayLeaderboard();
+}
+
+
+function timeToSeconds(time) {
+    const parts = time.split(':');
+
+    const minutes = parseInt(parts[0], 10);
+    const seconds = parseInt(parts[1], 10);
+
+    return minutes * 60 + seconds;
+}
+
+
+function displayLeaderboard() {
+    const tbody =
+        document.getElementById('leaderboard-body');
+
+    if (!tbody) {
+        return;
+    }
+
+    tbody.innerHTML = '';
+
+    const leaderboard =
+        JSON.parse(localStorage.getItem('sudokuLeaderboard')) || [];
+
+    leaderboard.forEach((entry, index) => {
+
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${entry.player}</td>
+            <td>${entry.difficulty}</td>
+            <td>${entry.time}</td>
+            <td>${entry.hints}</td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+
+function clearLeaderboard() {
+    localStorage.removeItem('sudokuLeaderboard');
+
+    displayLeaderboard();
+}
+
+
+// Load leaderboard when page opens
+window.addEventListener('load', () => {
+
+    displayLeaderboard();
+
+    const clearButton =
+        document.getElementById('clear-leaderboard');
+
+    if (clearButton) {
+        clearButton.addEventListener(
+            'click',
+            clearLeaderboard
+        );
+    }
 });
