@@ -657,3 +657,30 @@ window.addEventListener('load', () => {
         );
     }
 });
+
+// =========================
+// Dark Mode
+// =========================
+
+const darkModeButton =
+    document.getElementById('dark-mode-toggle');
+
+if (darkModeButton) {
+
+    darkModeButton.addEventListener('click', function () {
+
+        document.body.classList.toggle('dark-mode');
+
+        if (document.body.classList.contains('dark-mode')) {
+
+            darkModeButton.innerText = '☀️ Light Mode';
+
+        } else {
+
+            darkModeButton.innerText = '🌙 Dark Mode';
+
+        }
+
+    });
+
+}
