@@ -1,47 +1,40 @@
 # 🎮 Sudoku Game
 
-A web-based Sudoku game built using Python, Flask, HTML, CSS, and JavaScript.
+A modern Sudoku game built with **Python Flask, JavaScript, HTML, and CSS**.
 
-The application generates Sudoku puzzles with different difficulty levels and provides an interactive interface for solving and checking puzzles.
+This project was developed as a refactoring exercise using GitHub Copilot, with additional features focused on usability, validation, game management, and user experience.
 
-## 🚀 Features
+## ✨ Features
 
-- 🎮 Interactive Sudoku game
-- 👤 Player name
-- 🎯 Three difficulty levels:
-  - Easy
-  - Medium
-  - Hard
+- 🎯 Sudoku puzzles with unique solutions
+- 🟢 Easy difficulty
+- 🟡 Medium difficulty
+- 🔴 Hard difficulty
 - ⏱️ Game timer
 - ⏸️ Pause and Resume
 - 💡 Hint system
-- 🔍 Solution checking
+- 🔢 Hint counter
+- ✅ Solution validation
 - ❌ Incorrect-cell highlighting
-- 🎉 Completion/result screen
+- 👤 Player name support
 - 🏆 Top 10 leaderboard
-- 💾 Leaderboard persistence using browser localStorage
-- 🧹 Clear leaderboard
+- 🗑️ Clear leaderboard
 - 🌙 Dark mode
+- 🎉 Completion/result screen
 - 📱 Responsive user interface
+- 🧪 Automated test suite
 
-## 🛠️ Technologies Used
+## 🛠️ Technologies
 
-### Backend
-- Python
+- Python 3
 - Flask
-
-### Frontend
 - HTML5
 - CSS3
 - JavaScript
+- Pytest
+- Git & GitHub
 
-### Testing
-- pytest
-
-### Data Storage
-- Browser LocalStorage for leaderboard data
-
-## 📂 Project Structure
+## 📁 Project Structure
 
 ```text
 starter/
