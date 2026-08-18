@@ -322,6 +322,20 @@ async function useHint() {
 }
 
 async function checkSolution() {
+    const playerInput = document.getElementById('player-name');
+
+    const playerName = playerInput.value.trim();
+
+    if (playerName === '') {
+        const msg = document.getElementById('message');
+
+        msg.style.color = '#d32f2f';
+        msg.innerText = 'Please enter your name before checking the solution.';
+
+        playerInput.focus();
+
+        return;
+    }
 
     const boardDiv = document.getElementById('sudoku-board');
 
